@@ -1,32 +1,19 @@
-# weather_dashboard
+// const settings = {
+// 	"async": true,
+// 	"crossDomain": true,
+// 	"url": "https://community-open-weather-map.p.rapidapi.com/forecast?q=san%20francisco%2Cus",
+// 	"method": "GET",
+// 	"headers": {
+// 		"x-rapidapi-key": "f3e3f420ecmsh744d6652dc05902p13af66jsn68c5d55f813d",
+// 		"x-rapidapi-host": "community-open-weather-map.p.rapidapi.com"
+// 	}
+// };
 
-// Weather 
-// ========
-// Using two APIs from openweathermap.org
-//  1) Current Weather API - just need to get the latitude and longitude, pass in city name 
-//  2) One Call API - pass in the latitude and longitude you received from the Current Weather API, pass in 'exclude' parameter for minutely, hourly, and alerts (we only need current and daily), then pass in units and specify 'imperial'
-// HTML
-- Search field for city name and a search button or icon
-- A list of past city searches
-- Current Weather info
-- 5-day Forecast
-<div>
-  <h2 class='city-name'></h2>
-  <h3 class='current-date'></h3>
-  <p>Temp: <span class='current-temp'></span></p>
-  <p>Humidity: <span class='humidity'></span></p>
-  <p>Wind speed: <span class='wind-speed'></span></p>
-  <p>UV Index: <span class='uv-index'></span></p>
-</div>
-// Javascript
-- Get a reference to the search button and assign a click event listener to it
-  - The function that will be called should do the following
-    a) Get the value of the search field (city name)
-    b) Call the Current Weather API and pass in the city name
-    c) Call the One Call API ans pass in the latitude and longitude, the exlude, and the units
-    d) Then display the data for Current Weather and 5-day Forecast
-  <input type="text" class='search-field' placeholder='Enter name of city' /> <button type='button' class='search-button'>Search</button>  
-  const API_KEY = 'askjfkjq3;tjq9g' // Put your API key here
+// $.ajax(settings).done(function (response) {
+// 	console.log(response);
+// });
+
+const API_KEY = 'askjfkjq3;tjq9g' // Put your API key here
   let $searchBtn = $('.search-button');
   let $searchField = $('.search-field');
   let cityName;
@@ -69,17 +56,37 @@
     let correctedDate;
     $cityName.text(cityName);
     correctedDate = moment(weatherData.dt).format() // look up usage using their manual
-    $currentDate.text(correctedDate) // Use moment() to convert this to Month, date, and year
+    //$currentDate.text(correctedDate) // Use moment() to convert this to Month, date, and year
     $currentTemp.text(weatherData.temp);
     $humidity.text(weatherData.humidity);
     $windSpeed.text(weatherData.wind_speed);
     $uvIndex.text(weatherData.uvi);
   }
+  function formatDate(millis) {
+    var now = new Date(millis);
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var formattedDate = (month) + "/" + (day) + "/" + now.getFullYear();
+    return (formattedDate);
+}
+
+  $("#forecast-cards").empty();
+
   function displayFiveDayForecast(weatherData) {
-    // TODO: Jin to implement
+	// TODO: Jin to implement
+	for (i = 1; i < 6; i++) {
+		var $forecastCol = $("<div class='col-sm'>");
+		var $forecastCard = $("<div class='card forecast'>");
+		$forecastCard.append("<span><strong>" + formatDate(currentWeather.daily[i].dt * 1000) + "</strong></span>");
+		$forecastCard.append("<span><strong>Temp:</strong> " + currentWeather.daily[i].temp.day.toFixed(1) + " \xB0F</span");
+		$forecastCard.append("<span><strong>Humidity:</strong> " + currentWeather.daily[i].humidity.toFixed(0) + " %</span>");
+		$forecastCol.append($forecastCard);
+		$("#forecast-cards").append($forecastCol);
+	}
   }
+  
   $searchBtn.on('click', function() {
-    let latAndLong;
+    let LatAndLong;
     // TODO: Get the value of the search field (city name)
     cityName = $searchField.val();
     // TODO: Call the Current Weather API and pass in the city name
@@ -88,7 +95,8 @@
     getWeatherData(latAndLong.lat, latAndLon.lon);
     // TODO: Then display the data for Current Weather and 5-day Forecast    
   });
-  // OTHER TODOS:
+ 
+  // //
   // function to save list of past searches to local storage
   // function to retrieve list of past searches from local storage and display them on the list under the Search field
   
