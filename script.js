@@ -13,70 +13,51 @@ $("#city-list").on("click", function (event) {
 });
 
 $("#btn-search").on("click", function (event) {
-    
     event.preventDefault();
-
-    var inputCity = $("#input-city").val().trim().toLowerCase();
-
-    if (inputCity === "") {
+	var inputCity = $("#input-city").val().trim().toLowerCase();
+	if (inputCity === "") {
         alert("Must enter city!");
-       
     } else {
-
-        var cityList = localStorage.getItem("cityList");
+		var cityList = localStorage.getItem("cityList");
         var cities;
-
-        if (cityList != "") {
-            cities = JSON.parse(localStorage.getItem("cityList"));
-        }
+	if (cityList != "") {
+    	cities = JSON.parse(localStorage.getItem("cityList"));
+    }
         console.log(cityList);
-
-        
-        var citiesArray=y = [];
+	var citiesArray=y = [];
         for (key in cities) {
-            citiesArray.push(cities[key]);
+        citiesArray.push(cities[key]);
         }
-        console.log(citiesArray);
+       
         for (i = 0; i < citiesArray.length; i++) {
             if (inputCity === citiesArray[i]) {
-                citiesArray.splice(i, 1);
-            }
+				citiesArray.splice(i, 1);
+			}
         }
-        console.log(citiesArray);
+ 
         
         citiesArray.unshift(inputCity);
-        console.log(citiesAry);
+  
         
         $("#city-list").empty();
-
-        
-        $("#city-section").attr("class", "card");
-
-        
-        for (i = 0; i < citiesArray.length; i++) {
-
-            var $cityListItem = $("<li class='list-group-item'>");
+		$("#city-section").attr("class", "card");
+		
+		for (i = 0; i < citiesArray.length; i++) {
+			var $cityListItem = $("<li class='list-group-item'>");
             $cityListItem.append(citiesArray[i]);
-
-            $("#city-list").append($cityListItem);
+			$("#city-list").append($cityListItem);
         }
-
-        
-
-        for (i = 0; i < citiesArray.length; i++) {
+		
+		for (i = 0; i < citiesArray.length; i++) {
             citiesJson[i] = citiesArray[i];
         }
-
-        console.log(citiesJson);
+	
 
         localStorage.setItem("cityList", JSON.stringify(citiesJson));
-        
-        getCityWeather(inputCity);
+    	getCityWeather(inputCity);
     }
-
 });
 
-//function for date
 function formatDate(millis) {
     var now = new Date(millis);
     var day = ("0" + now.getDate()).slice(-2);
@@ -84,37 +65,31 @@ function formatDate(millis) {
     var formattedDate = (month) + "/" + (day) + "/" + now.getFullYear();
     return (formattedDate);
 }
-//function to get data for current city
+
 function getCityWeather(inputCity) {
     
     var query1day = "http://api.openweathermap.org/data/2.5/weather?q=" + inputCity + "&appid=513af3de6beb84fb3eb34fb681d375e8&&units=imperial";
-    
-    var currentLat = 0;
+	var currentLat = 0;
     var currentLon = 0;
-    //pulling the variables from the html
-    var currentCity = document.getElementById("currentCity");
+ 	var currentCity = document.getElementById("currentCity");
     var currentTemp = document.getElementById("currentTemp");
     var currentHum = document.getElementById("currentHumidity");
     var currentWind = document.getElementById("currentWindSpeed");
     var currentUV = document.getElementById("currentUVIndex");
 
-    
     $.ajax({
         url: query1day,
         method: "GET"
 
     }).then(function (response) {
-
-        
-        console.log(response);
-        var cityWeather = response;
-
-        var now = new Date();
+		
+		var cityWeather = response;
+		var now = new Date();
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var today = (month) + "/" + (day) + "/" + now.getFullYear();
-        console.log(cityWeather);
-        var weather = cityWeather.weather[0].main;
+		
+		var weather = cityWeather.weather[0].main;
         var weatherIcon;
 
         if (weather === "Clear") {
@@ -158,8 +133,6 @@ function getCityWeather(inputCity) {
 
             $("#forecast-cards").empty();
 
-
-           
             for (i = 1; i < 6; i++) {
                 var $forecastCol = $("<div class='col-sm'>");
                 var $forecastCard = $("<div class='card forecast'>");
@@ -174,44 +147,29 @@ function getCityWeather(inputCity) {
 }; 
 
 $(function () {
-
-    var cityList = localStorage.getItem("cityList");
+	var cityList = localStorage.getItem("cityList");
     var cities;
-
-    console.log(cityList);
 
     if (cityList != "") {
         cities = JSON.parse(localStorage.getItem("cityList"));
 
-        // Create an array to store cities in.
         var citiesArray = [];
         for (key in cities) {
             citiesArray.push(cities[key]);
         }
         
-        $("#city-list").empty();
+		$("#city-list").empty();
+		$("#city-section").attr("class", "card");
 
-        
-        $("#city-section").attr("class", "card");
-
-        
         for (i = 0; i < citiesArray.length; i++) {
-
-            var $cityListItem = $("<li class='list-group-item'>");
+			var $cityListItem = $("<li class='list-group-item'>");
             $cityListItem.append(citiesArray[i]);
-
-            $("#city-list").append($cityListItem);
+			$("#city-list").append($cityListItem);
         }
-
-       
-        var citiesJson = {};
-
-        for (i = 0; i < citiesArray.length; i++) {
+		var citiesJson = {};
+		for (i = 0; i < citiesArray.length; i++) {
             citiesJson[i] = citiesArray[i];
         }
-
-        getCityWeather(citiesArray[0]);
-        console.log(citiesArray[0]);
-    }
-
+		getCityWeather(citiesArray[0]);
+	}
 });
